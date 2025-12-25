@@ -25,7 +25,7 @@ const buildBoard = () => [
 ];
 
 const boardState = function () {
-	return [...this];
+	return [...this.map((row) => [...row])];
 };
 
 const updateBoard = function (row, col, direction) {
