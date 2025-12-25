@@ -1,6 +1,6 @@
 import { DIRECTIONS, PEG, HOLE, INVALID } from './main.js';
 
-const calculateJumpSequence = (row, col, direction) => {
+const getJumpCoordinates = (row, col, direction) => {
 	const { dr, dc } = direction;
 	return {
 		rMid: row + dr / 2,
@@ -10,9 +10,8 @@ const calculateJumpSequence = (row, col, direction) => {
 	};
 };
 
-const isInsideBoard = function (board, row, col) {
-	return row >= 0 && row < board.length && col >= 0 && col < board[0].length;
-};
+const isInsideBoard = (board, row, col) =>
+	row >= 0 && row < board.length && col >= 0 && col < board[0].length;
 
 const getSlot = (board, row, col) =>
 	isInsideBoard(board, row, col) ? board[row][col] : null;
@@ -30,48 +29,44 @@ const buildBoard = () => [
 	[INVALID, INVALID, PEG, PEG, PEG, INVALID, INVALID],
 ];
 
-const boardState = function () {
-	return this.board.map((row) => [...row]);
-};
-
-const updateBoard = function (row, col, direction) {
-	const { rMid, cMid, rDest, cDest } = calculateJumpSequence(
-		row,
-		col,
-		direction
-	);
-	this.board[row][col] = HOLE;
-	this.board[rMid][cMid] = HOLE;
-	this.board[rDest][cDest] = PEG;
-};
-
-const isValidMove = function (row, col, direction) {
-	const { rMid, cMid, rDest, cDest } = calculateJumpSequence(
-		row,
-		col,
-		direction
-	);
-	return (
-		isPeg(this, row, col) &&
-		isPeg(this, rMid, cMid) &&
-		isEmpty(this, rDest, cDest)
-	);
-};
-
-const availableMoves = function (row, col) {
-	return Object.entries(DIRECTIONS)
-		.filter(([_, dir]) => {
-			return isValidMove.call(this.board, row, col, dir);
-		})
-		.map(([key]) => key);
-};
-
 export const createBoard = () => {
 	const board = buildBoard();
+
+	const getBoardSnapshot = () => board.map((row) => [...row]);
+
+	const isValidMove = (row, col, direction) => {
+		const { rMid, cMid, rDest, cDest } = getJumpCoordinates(
+			row,
+			col,
+			direction
+		);
+		return (
+			isPeg(board, row, col) &&
+			isPeg(board, rMid, cMid) &&
+			isEmpty(board, rDest, cDest)
+		);
+	};
+
+	const move = (row, col, direction) => {
+		const { rMid, cMid, rDest, cDest } = getJumpCoordinates(
+			row,
+			col,
+			direction
+		);
+		board[row][col] = HOLE;
+		board[rMid][cMid] = HOLE;
+		board[rDest][cDest] = PEG;
+	};
+
+	const availableMoves = (row, col) =>
+		Object.entries(DIRECTIONS)
+			.filter(([_, dir]) => isValidMove(row, col, dir))
+			.map(([key]) => key);
+
 	return {
-		boardState: boardState.bind({ board }),
-		updateBoard: updateBoard.bind({ board }),
-		isValidMove: isValidMove.bind(board),
-		availableMoves: availableMoves.bind({ board }),
+		boardState: getBoardSnapshot,
+		applyMove: move,
+		isValidMove,
+		availableMoves,
 	};
 };

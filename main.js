@@ -67,7 +67,7 @@ const main = () => {
 		displayAvailableMoves(board, row, col);
 		const direction = getPegDirection();
 		if (board.isValidMove(row, col, direction)) {
-			board.updateBoard(row, col, direction);
+			board.applyMove(row, col, direction);
 		}
 	}
 	endGame(game.state(board));
