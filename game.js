@@ -1,20 +1,19 @@
 export const createGame = (board) => {
-	let pegCount = board.getPegCount();
-
 	const getStatus = () => {
+		const pegCount = board.getPegCount();
 		if (pegCount === 1) return 'WON';
 		if (pegCount > 1) {
 			if (!board.hasAnyValidMoves()) return 'LOST';
 		}
 		return 'PLAYING';
 	};
+
 	const playMove = (row, col, direction) => {
 		if (!board.isValidMove(row, col, direction)) {
-			return { success: false, status: getStatus() };
+			return { success: false };
 		}
 		board.executeMove(row, col, direction);
-		pegCount--;
-		return { success: true, status: getStatus() };
+		return { success: true };
 	};
 
 	return {
