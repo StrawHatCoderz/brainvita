@@ -1,39 +1,24 @@
-import { DIRECTIONS, PEG } from './main.js';
+export const createGame = (board) => {
+	let pegCount = board.getPegCount();
 
-const getStatus = (gameBoard) => {
-	const board = gameBoard.boardState;
-	let pegCount = 0;
-	let canMove = false;
-	const dirs = Object.values(DIRECTIONS);
-	for (let r = 0; r < board.length; r++) {
-		for (let c = 0; c < board[r].length; c++) {
-			if (board[r][c] === PEG) {
-				pegCount++;
-				if (!canMove) {
-					for (const d of dirs) {
-						if (gameBoard.isValidMove(r, c, d)) {
-							canMove = true;
-							break;
-						}
-					}
-				}
-			}
+	const getStatus = () => {
+		if (pegCount === 1) return 'WON';
+		if (pegCount > 1) {
+			if (!board.hasAnyValidMoves()) return 'LOST';
 		}
-	}
-	if (pegCount === 1) return 'WON';
-	if (pegCount > 1 && !canMove) return 'LOST';
-	return 'PLAYING';
-};
+		return 'PLAYING';
+	};
+	const playMove = (row, col, direction) => {
+		if (!board.isValidMove(row, col, direction)) {
+			return { success: false, status: getStatus() };
+		}
+		board.executeMove(row, col, direction);
+		pegCount--;
+		return { success: true, status: getStatus() };
+	};
 
-export const createGame = (gameBoard) => {
 	return {
-		getStatus: () => getStatus(gameBoard),
-		playMove: (row, col, direction) => {
-			if (!gameBoard.isValidMove(row, col, direction)) {
-				return { success: false };
-			}
-			gameBoard.executeMove(row, col, direction);
-			return { success: true };
-		},
+		getStatus,
+		playMove,
 	};
 };

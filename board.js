@@ -63,10 +63,24 @@ export const createBoard = () => {
 			.filter(([_, dir]) => isValidMove(row, col, dir))
 			.map(([key]) => key);
 
+	const hasAnyValidMoves = () =>
+		board.some((row, rIdx) =>
+			row.some(
+				(cell, cIdx) =>
+					cell === PEG &&
+					Object.values(DIRECTIONS).some((dir) => isValidMove(rIdx, cIdx, dir))
+			)
+		);
+
+	const getPegCount = () =>
+		board.flat().filter((cell) => cell === PEG).length;
+
 	return {
 		boardState: getBoardSnapshot,
 		executeMove: move,
 		isValidMove,
 		availableMoves,
+		hasAnyValidMoves,
+		getPegCount,
 	};
 };
