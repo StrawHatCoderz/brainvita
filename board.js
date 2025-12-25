@@ -34,6 +34,9 @@ export const createBoard = () => {
 
 	const getBoardSnapshot = () => board.map((row) => [...row]);
 
+	const isValidPosition = (row, col) =>
+		isInsideBoard(board, row, col) && getSlot(board, row, col) !== INVALID;
+
 	const isValidMove = (row, col, direction) => {
 		const { rMid, cMid, rDest, cDest } = getJumpCoordinates(
 			row,
@@ -78,6 +81,7 @@ export const createBoard = () => {
 		boardState: getBoardSnapshot,
 		executeMove: move,
 		isValidMove,
+		isValidPosition,
 		availableMoves,
 		hasAnyValidMoves,
 		getPegCount,
