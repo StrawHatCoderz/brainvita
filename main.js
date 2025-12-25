@@ -22,16 +22,17 @@ const displayBoard = (board) => {
 	console.log('');
 };
 
-const getPegPosition = () => {
-	const promptMessage = 'Enter Row And Column of Peg ex: 6 4: ';
-	return prompt(promptMessage)
-		.split(' ')
-		.map((x) => parseInt(x) - 1);
-};
+const askUntilValid = (question, parseFn, isValidFn, errorMsg) => {
+	const input = prompt(question);
 
-const getPegDirection = () => {
-	const promptMessage = 'Choose Direction from Available Directions';
-	return INPUT_MAP[prompt(promptMessage).toUpperCase()];
+	if (!input) return askUntilValid(question, parseFn, isValidFn, errorMsg);
+
+	const result = parseFn(input);
+	if (!isValidFn(result)) {
+		console.log(errorMsg);
+		askUntilValid(question, parseFn, isValidFn, errorMsg);
+	}
+	return result;
 };
 
 const displayAvailableMoves = (board, row, col) => {
@@ -49,14 +50,25 @@ const main = () => {
 	const board = createBoard();
 	const game = createGame(board);
 
+	let message = '';
 	while (game.getStatus() === 'PLAYING') {
 		console.clear();
 		displayBoard(board.boardState());
+		if (message) console.log(`\n📢 ${message}\n`);
+		message = '';
 		const [row, col] = getPegPosition();
+
 		displayAvailableMoves(board, row, col);
+
 		const direction = getPegDirection();
-		game.playMove(row, col, direction);
+
+		const result = game.playMove(row, col, direction);
+
+		if (!result.success) {
+			message = '❌ Invalid Move! Try again.';
+		}
 	}
+
 	endGame(game.getStatus());
 };
 

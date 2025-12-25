@@ -1,13 +1,4 @@
-export const PEG = 1;
-export const HOLE = 0;
-export const INVALID = -1;
-
-export const DIRECTIONS = {
-	UP: { dr: -2, dc: 0 },
-	DOWN: { dr: 2, dc: 0 },
-	LEFT: { dr: 0, dc: -2 },
-	RIGHT: { dr: 0, dc: 2 },
-};
+import { DIRECTIONS, PEG, HOLE, INVALID } from './constants.js';
 
 const getJumpCoordinates = (row, col, direction) => {
 	const { dr, dc } = direction;
