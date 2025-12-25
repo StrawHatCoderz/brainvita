@@ -1,16 +1,5 @@
-import { createBoard } from './board.js';
+import { createBoard, DIRECTIONS, PEG, HOLE, INVALID } from './board.js';
 import { createGame } from './game.js';
-
-export const PEG = 1;
-export const HOLE = 0;
-export const INVALID = -1;
-
-export const DIRECTIONS = {
-	UP: { dr: -2, dc: 0 },
-	DOWN: { dr: 2, dc: 0 },
-	LEFT: { dr: 0, dc: -2 },
-	RIGHT: { dr: 0, dc: 2 },
-};
 
 const INPUT_MAP = {
 	U: DIRECTIONS.UP,
@@ -60,7 +49,7 @@ const main = () => {
 	const board = createBoard();
 	const game = createGame(board);
 
-	while (game.getStatus(board) === 'PLAYING') {
+	while (game.getStatus() === 'PLAYING') {
 		console.clear();
 		displayBoard(board.boardState());
 		const [row, col] = getPegPosition();
@@ -68,7 +57,7 @@ const main = () => {
 		const direction = getPegDirection();
 		game.playMove(row, col, direction);
 	}
-	endGame(game.getStatus(board));
+	endGame(game.getStatus());
 };
 
 main();

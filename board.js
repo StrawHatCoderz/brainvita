@@ -1,4 +1,13 @@
-import { DIRECTIONS, PEG, HOLE, INVALID } from './main.js';
+export const PEG = 1;
+export const HOLE = 0;
+export const INVALID = -1;
+
+export const DIRECTIONS = {
+	UP: { dr: -2, dc: 0 },
+	DOWN: { dr: 2, dc: 0 },
+	LEFT: { dr: 0, dc: -2 },
+	RIGHT: { dr: 0, dc: 2 },
+};
 
 const getJumpCoordinates = (row, col, direction) => {
 	const { dr, dc } = direction;
@@ -72,8 +81,7 @@ export const createBoard = () => {
 			)
 		);
 
-	const getPegCount = () =>
-		board.flat().filter((cell) => cell === PEG).length;
+	const getPegCount = () => board.flat().filter((cell) => cell === PEG).length;
 
 	return {
 		boardState: getBoardSnapshot,
