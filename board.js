@@ -37,11 +37,12 @@ const updateBoard = function (row, col, direction) {
 
 const isValidMove = function (row, col, direction) {
 	const { rMid, cMid, rDest, cDest } = getPegSurroundings(row, col, direction);
-	if (!isInsideBoard.call(this, rDest, cDest)) return false;
-	if (this[row][col] !== PEG) return false;
-	if (this[rMid][cMid] !== PEG) return false;
-	if (this[rDest][cDest] !== HOLE) return false;
-	return true;
+	return (
+		isInsideBoard.call(this, rDest, cDest) &&
+		this[row][col] === PEG &&
+		this[rMid][cMid] === PEG &&
+		this[rDest][cDest] === HOLE
+	);
 };
 
 const availableMoves = function (row, col) {
