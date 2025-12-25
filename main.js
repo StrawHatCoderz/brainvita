@@ -40,22 +40,22 @@ const displayAvailableMoves = (availableMoves) => {
 	console.log('Available Directions:', availableMoves.join(' '));
 };
 
-const getPegPosition = (board) => {
+const getPegSelection = (board) => {
 	const input = prompt(CELL_INPUT_MSG);
 	if (!input) {
-		return getPegPosition(board);
+		return getPegSelection(board);
 	}
 	const [row, col] = parseCoords(input);
 	if (!board.isValidPosition(row, col)) {
 		console.log(CELL_INPUT_ERR);
-		return getPegPosition(board);
+		return getPegSelection(board);
 	}
 	const availableMoves = board.availableMoves(row, col);
 	if (availableMoves.length === 0) {
 		console.log(MOVES_ERR);
-		return getPegPosition(board);
+		return getPegSelection(board);
 	}
-	return [row, col, availableMoves];
+	return { row, col, availableMoves };
 };
 
 const getPegDirection = (availableMoves) => {
@@ -90,7 +90,7 @@ const initGame = () => {
 	while (game.getStatus() === 'PLAYING') {
 		console.clear();
 		displayBoard(board.boardState());
-		const [row, col, availableMoves] = getPegPosition(board);
+		const { row, col, availableMoves } = getPegSelection(board);
 		displayAvailableMoves(availableMoves);
 		const direction = getPegDirection(availableMoves);
 		game.playMove(row, col, direction);
