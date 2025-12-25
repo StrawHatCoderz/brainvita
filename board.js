@@ -1,6 +1,6 @@
 import { DIRECTIONS, PEG, HOLE, INVALID } from './main.js';
 
-const getPegSurroundings = (row, col, direction) => {
+const calculateJumpSequence = (row, col, direction) => {
 	const { dr, dc } = direction;
 	return {
 		rMid: row + dr / 2,
@@ -10,9 +10,15 @@ const getPegSurroundings = (row, col, direction) => {
 	};
 };
 
-const isInsideBoard = function (row, col) {
-	return row >= 0 && row < this.length && col >= 0 && col < this[0].length;
+const isInsideBoard = function (board, row, col) {
+	return row >= 0 && row < board.length && col >= 0 && col < board[0].length;
 };
+
+const getSlot = (board, row, col) =>
+	isInsideBoard(board, row, col) ? board[row][col] : null;
+
+const isPeg = (board, row, col) => getSlot(board, row, col) === PEG;
+const isEmpty = (board, row, col) => getSlot(board, row, col) === HOLE;
 
 const buildBoard = () => [
 	[INVALID, INVALID, PEG, PEG, PEG, INVALID, INVALID],
@@ -29,19 +35,27 @@ const boardState = function () {
 };
 
 const updateBoard = function (row, col, direction) {
-	const { rMid, cMid, rDest, cDest } = getPegSurroundings(row, col, direction);
+	const { rMid, cMid, rDest, cDest } = calculateJumpSequence(
+		row,
+		col,
+		direction
+	);
 	this[row][col] = HOLE;
 	this[rMid][cMid] = HOLE;
 	this[rDest][cDest] = PEG;
 };
 
 const isValidMove = function (row, col, direction) {
-	const { rMid, cMid, rDest, cDest } = getPegSurroundings(row, col, direction);
+	const { rMid, cMid, rDest, cDest } = calculateJumpSequence(
+		row,
+		col,
+		direction
+	);
 	return (
-		isInsideBoard.call(this, rDest, cDest) &&
-		this[row][col] === PEG &&
-		this[rMid][cMid] === PEG &&
-		this[rDest][cDest] === HOLE
+		isInsideBoard(this, rDest, cDest) &&
+		isPeg(this, row, col) &&
+		isPeg(this, rMid, cMid) &&
+		isEmpty(this, rDest, cDest)
 	);
 };
 
