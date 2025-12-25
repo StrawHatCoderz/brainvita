@@ -58,7 +58,7 @@ const endGame = (state) => {
 
 const main = () => {
 	const board = createBoard();
-	const game = createGame();
+	const game = createGame(board);
 
 	while (game.state(board) === 'PLAYING') {
 		console.clear();
@@ -66,9 +66,7 @@ const main = () => {
 		const [row, col] = getPegPosition();
 		displayAvailableMoves(board, row, col);
 		const direction = getPegDirection();
-		if (board.isValidMove(row, col, direction)) {
-			board.applyMove(row, col, direction);
-		}
+		game.playMove(row, col, direction);
 	}
 	endGame(game.state(board));
 };

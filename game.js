@@ -1,6 +1,6 @@
 import { DIRECTIONS, PEG } from './main.js';
 
-const gameState = (myBoard) => {
+const getStatus = (myBoard) => {
 	const board = myBoard.boardState();
 
 	let pegCount = 0;
@@ -26,10 +26,15 @@ const gameState = (myBoard) => {
 	return 'PLAYING';
 };
 
-export const createGame = () => {
+export const createGame = (board) => {
 	return {
-		state: function (board) {
-			return gameState(board);
+		state: function () {
+			return getStatus(board);
+		},
+		playMove: function (row, col, direction) {
+			if (board.isValidMove(row, col, direction)) {
+				board.applyMove(row, col, direction);
+			}
 		},
 	};
 };
