@@ -65,7 +65,7 @@ export const createBoard = () => {
 
 	return {
 		boardState: getBoardSnapshot,
-		applyMove: move,
+		executeMove: move,
 		isValidMove,
 		availableMoves,
 	};

@@ -60,7 +60,7 @@ const main = () => {
 	const board = createBoard();
 	const game = createGame(board);
 
-	while (game.state(board) === 'PLAYING') {
+	while (game.getStatus(board) === 'PLAYING') {
 		console.clear();
 		displayBoard(board.boardState());
 		const [row, col] = getPegPosition();
@@ -68,7 +68,7 @@ const main = () => {
 		const direction = getPegDirection();
 		game.playMove(row, col, direction);
 	}
-	endGame(game.state(board));
+	endGame(game.getStatus(board));
 };
 
 main();
