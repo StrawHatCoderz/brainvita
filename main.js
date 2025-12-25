@@ -8,6 +8,7 @@ import {
 	CELL_INPUT_ERR,
 	DIR_INPUT_MSG,
 	DIR_INPUT_ERR,
+	MOVES_ERR,
 	PEG,
 	HOLE,
 	INVALID,
@@ -28,11 +29,10 @@ const parseCoords = (input) =>
 
 const parseDirection = (input) => INPUT_MAP[input.toUpperCase()];
 
-const isInside = (n) => !isNaN(n) && n >= 0 && n <= 6;
-const isValidCoord = (row, col) => isInside(row) && isInside(col);
-
-const endGame = (state) => {
-	const message = state === 'WON' ? WIN_MESSAGE : LOSE_MESSAGE;
+const endGame = (board) => {
+	console.clear();
+	displayBoard(board);
+	const message = board.getStatus() === 'WON' ? WIN_MESSAGE : LOSE_MESSAGE;
 	console.log(message);
 };
 
@@ -40,17 +40,22 @@ const displayAvailableMoves = (availableMoves) => {
 	console.log('Available Directions:', availableMoves.join(' '));
 };
 
-const getPegPosition = () => {
+const getPegPosition = (board) => {
 	const input = prompt(CELL_INPUT_MSG);
 	if (!input) {
-		return getPegPosition();
+		return getPegPosition(board);
 	}
 	const [row, col] = parseCoords(input);
-	if (!isValidCoord(row, col)) {
+	if (!board.isValidPosition(row, col)) {
 		console.log(CELL_INPUT_ERR);
-		return getPegPosition();
+		return getPegPosition(board);
 	}
-	return [row, col];
+	const availableMoves = board.availableMoves(row, col);
+	if (availableMoves.length === 0) {
+		console.log(MOVES_ERR);
+		return getPegPosition(board);
+	}
+	return [row, col, availableMoves];
 };
 
 const getPegDirection = (availableMoves) => {
@@ -85,13 +90,12 @@ const initGame = () => {
 	while (game.getStatus() === 'PLAYING') {
 		console.clear();
 		displayBoard(board.boardState());
-		const [row, col] = getPegPosition();
-		const availableMoves = board.availableMoves(row, col);
+		const [row, col, availableMoves] = getPegPosition(board);
 		displayAvailableMoves(availableMoves);
 		const direction = getPegDirection(availableMoves);
 		game.playMove(row, col, direction);
 	}
-	endGame(game.getStatus());
+	endGame(board);
 };
 
 initGame();
