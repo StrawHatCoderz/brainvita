@@ -31,7 +31,7 @@ const buildBoard = () => [
 ];
 
 const boardState = function () {
-	return this.map((row) => [...row]);
+	return this.board.map((row) => [...row]);
 };
 
 const updateBoard = function (row, col, direction) {
@@ -40,9 +40,9 @@ const updateBoard = function (row, col, direction) {
 		col,
 		direction
 	);
-	this[row][col] = HOLE;
-	this[rMid][cMid] = HOLE;
-	this[rDest][cDest] = PEG;
+	this.board[row][col] = HOLE;
+	this.board[rMid][cMid] = HOLE;
+	this.board[rDest][cDest] = PEG;
 };
 
 const isValidMove = function (row, col, direction) {
@@ -52,7 +52,6 @@ const isValidMove = function (row, col, direction) {
 		direction
 	);
 	return (
-		isInsideBoard(this, rDest, cDest) &&
 		isPeg(this, row, col) &&
 		isPeg(this, rMid, cMid) &&
 		isEmpty(this, rDest, cDest)
@@ -62,7 +61,7 @@ const isValidMove = function (row, col, direction) {
 const availableMoves = function (row, col) {
 	return Object.entries(DIRECTIONS)
 		.filter(([_, dir]) => {
-			return isValidMove.call(this, row, col, dir);
+			return isValidMove.call(this.board, row, col, dir);
 		})
 		.map(([key]) => key);
 };
@@ -70,9 +69,9 @@ const availableMoves = function (row, col) {
 export const createBoard = () => {
 	const board = buildBoard();
 	return {
-		boardState: boardState.bind(board),
-		updateBoard: updateBoard.bind(board),
+		boardState: boardState.bind({ board }),
+		updateBoard: updateBoard.bind({ board }),
 		isValidMove: isValidMove.bind(board),
-		availableMoves: availableMoves.bind(board),
+		availableMoves: availableMoves.bind({ board }),
 	};
 };
